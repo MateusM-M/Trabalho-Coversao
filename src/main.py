@@ -57,5 +57,4 @@ match modo:
                 resultado = fc.oct_hex(valor, base_origem, base_saida, passo_a_passo=True)
 
             sd.printa_valor(resultado)
-            
         
