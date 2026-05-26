@@ -1,8 +1,6 @@
 # F1 #
-def deciprabase(numero, base): 
+def decimalparabase(numero, base): 
     termos = "0123456789ABCDEF"
-    if numero == 0:
-        return "0"
     lista = []
     while numero > 0:
         resto = numero % base 
@@ -10,9 +8,8 @@ def deciprabase(numero, base):
         lista.append(termos[resto])
     lista.reverse()
     return "".join(lista)
-
 # F2 #
-def basepradec(numero, base):
+def baseparadecimal(numero, base):
     termos = "0123456789ABCDEF"
     cont = 0
     decimal = 0
@@ -104,4 +101,23 @@ def oct_hex(numero, base, nova_base):
           binario = bin_oct_hex(numero, 16, 2)
           resultado = bin_oct_hex(binario, 2, 8)
           return resultado
-      
+# F5 #
+def validar(valor, base):
+     valor = str(valor).upper()
+     valor = valor.replace(",",".")
+     termos = "0123456789ABCDEF"
+     termos_validos = termos[0:base]
+     numeropontos = valor.count(".")
+     if numeropontos > 1:
+          return False
+     numeroseparado = valor.split(".")
+     for digito in numeroseparado[0]:
+               if digito not in termos_validos:
+                    return False
+     if len(numeroseparado) == 2:
+        if numeroseparado[0] == "" or numeroseparado[1] == "":
+             return False
+        for digito in numeroseparado[1]:
+            if digito not in termos_validos:
+                 return False
+     return True
