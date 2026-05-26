@@ -21,6 +21,54 @@ def baseparadecimal(numero, base):
             decimal += num_para_calc * base ** cont
             cont += 1
     return decimal
+# F1 #
+def decimalparabase(numero, base): 
+    termos = "0123456789ABCDEF"
+    lista = []
+    while numero > 0:
+        resto = numero % base 
+        numero = numero // base
+        lista.append(termos[resto])
+    lista.reverse()
+    return "".join(lista)
+    def deciprabase(numero, base):
+    termos = "0123456789ABCDEF"
+    if numero == 0:
+        return "0"
+    lista = []
+    while numero > 0:
+        resto = numero % base
+        numero = numero // base
+        lista.append(termos[resto])
+    lista.reverse()
+    return "".join(lista)
+numero = input("")
+def virgulaviraponto (numero):
+    novonumero = numero.replace(",", ".")
+    if "." in novonumero:
+        numeroseparado = novonumero.split(".")
+        parteinteira = int(numeroseparado[0])
+        partefracionaria = numeroseparado[1]
+        partefracionaria = "0." + partefracionaria
+        return partefracionaria
+partefracionaria = virgulaviraponto(numero)
+lista = "0123456789ABCDEF"
+confirma = True
+lista2 = []
+cont = 0
+while confirma and cont < 16:
+    baseXfracao = str(float(partefracionaria) * base)
+    numeroseparado2 = baseXfracao.split(".")
+    intbaseXfracao = numeroseparado2[0]
+    frabaseXfracao = "0." + numeroseparado2[1]
+    frabaseXfracao = float(frabaseXfracao)
+    lista2.append(lista[int(intbaseXfracao)])
+    "".join(lista2)
+    cont += 1
+    if frabaseXfracao == 0:
+        confirma = False
+    elif cont == 16:
+        print("O numéro máximo de algarismos foi alcançado")
 
 # F3 #
 def bin_oct_hex(numero, base, nova_base):
