@@ -11,8 +11,8 @@ def _preparar_numero(valor):
     return inteiro, fracao
 
 
-# --- F1: DECIMAL PARA BASE ---
-def decimalparabase(numero_str, base): 
+# --- F1: DECIMAL PARA BASE (Divisões e Multiplicações Sucessivas) ---
+def decimalparabase(numero_str, base, passo_a_passo=False): 
     inteiro_str, fracao_str = _preparar_numero(numero_str)
     termos = "0123456789ABCDEF"
     
@@ -20,29 +20,49 @@ def decimalparabase(numero_str, base):
     numero_int = int(inteiro_str) if inteiro_str else 0
     if numero_int == 0:
         res_inteiro = "0"
+        if passo_a_passo:
+            print("\n[Passo a Passo] Parte Inteira: Valor é 0. Resultado = 0")
     else:
+        if passo_a_passo:
+            print(f"\n[Passo a Passo] Parte Inteira (Divisões Sucessivas por {base}):")
         lista = []
         while numero_int > 0:
-            lista.append(termos[numero_int % base])
-            numero_int //= base
+            quociente = numero_int // base
+            resto_digito = termos[numero_int % base]
+            if passo_a_passo:
+                print(f"  {numero_int:>4} ÷ {base} = {quociente:>4} | Resto: {resto_digito}")
+            lista.append(resto_digito)
+            numero_int = quociente
         lista.reverse()
         res_inteiro = "".join(lista)
+        if passo_a_passo:
+            print(f"  -> Lendo os restos de baixo para cima: {res_inteiro}")
         
     # Processamento da Parte Fracionária (Multiplicações Sucessivas)
     if not fracao_str:
         return res_inteiro
 
+    if passo_a_passo:
+        print(f"\n[Passo a Passo] Parte Fracionária (Multiplicações Sucessivas por {base}):")
+        
     res_fracao = []
     truncado = False
-    # Transforma a string fracionária em uma fração exata (Ex: "625" -> 625/1000)
     resto = Fraction(int(fracao_str), 10**len(fracao_str))
     
-    for _ in range(16):
+    for i in range(16):
+        resto_antigo = resto
         resto *= base
         digito = int(resto)
-        res_fracao.append(termos[digito])
+        digito_termo = termos[digito]
+        
+        if passo_a_passo:
+            print(f"  Passo {i+1:2}: {float(resto_antigo)} × {base} = {float(resto)} -> Dígito: {digito_termo}")
+            
+        res_fracao.append(digito_termo)
         resto -= digito
         if resto == 0:
+            if passo_a_passo:
+                print("  -> Multiplicação exata atingiu zero!")
             break
     else:
         if resto > 0:
@@ -54,30 +74,49 @@ def decimalparabase(numero_str, base):
     return resultado
 
 
-# --- F2: BASE PARA DECIMAL ---
-def baseparadecimal(numero_str, base):
+# --- F2: BASE PARA DECIMAL (Somatório Posicional) ---
+def baseparadecimal(numero_str, base, passo_a_passo=False):
     inteiro_str, fracao_str = _preparar_numero(numero_str)
     termos = "0123456789ABCDEF"
     
     # Processamento da Parte Inteira (Somatório Posicional)
+    if passo_a_passo:
+        print(f"\n[Passo a Passo] Parte Inteira (Somatório Posicional na Base {base}):")
+        
     decimal_int = 0
     cont = 0
     for i in range(len(inteiro_str) - 1, -1, -1):
-        decimal_int += termos.index(inteiro_str[i]) * (base ** cont)
+        digito_char = inteiro_str[i]
+        valor_digito = termos.index(digito_char)
+        termo_soma = valor_digito * (base ** cont)
+        
+        if passo_a_passo:
+            print(f"  Dígito '{digito_char}' na posição {cont}: {valor_digito} × ({base}^{cont}) = {termo_soma}")
+            
+        decimal_int += termo_soma
         cont += 1
         
     # Processamento da Parte Fracionária (Potências Negativas)
     if not fracao_str:
         return str(decimal_int)
         
+    if passo_a_passo:
+        print(f"\n[Passo a Passo] Parte Fracionária (Potências Negativas na Base {base}):")
+        
     decimal_frac = Fraction(0)
     for i, digito in enumerate(fracao_str):
-        decimal_frac += Fraction(termos.index(digito), base ** (i + 1))
+        valor_digito = termos.index(digito)
+        expoente = i + 1
+        termo_frac = Fraction(valor_digito, base ** expoente)
         
-    # Soma exata utilizando Fraction para evitar floating-point bugs do Python
+        if passo_a_passo:
+            print(f"  Dígito '{digito}' na posição -{expoente}: {valor_digito} × ({base}^-{expoente}) = {float(termo_frac)}")
+            
+        decimal_frac += termo_frac
+        
     total = Fraction(decimal_int) + decimal_frac
     
-    # Formatação controlada da saída em base 10 (até 16 casas)
+    # Formatação da saída decimal
     int_part = total.numerator // total.denominator
     resto_part = total - int_part
     
@@ -100,8 +139,8 @@ def baseparadecimal(numero_str, base):
     return resultado
 
 
-# --- F3: BINÁRIO <-> OCTAL / HEXADECIMAL ---
-def bin_oct_hex(numero_str, base_origem, base_destino):
+# --- F3: BINÁRIO <-> OCTAL / HEXADECIMAL (Agrupamento de Bits) ---
+def bin_oct_hex(numero_str, base_origem, base_destino, passo_a_passo=False):
     inteiro_str, fracao_str = _preparar_numero(numero_str)
     
     tabela_conversao_octal = {"000": "0", "001": "1", "010": "2", "011": "3", "100": "4", "101": "5", "110": "6", "111": "7"}
@@ -118,18 +157,33 @@ def bin_oct_hex(numero_str, base_origem, base_destino):
         tam_bloco = 3 if base_destino == 8 else 4
         tabela = tabela_conversao_octal if base_destino == 8 else tabela_conversao_hex
         
+        if passo_a_passo:
+            print(f"\n[Passo a Passo] Agrupando bits em blocos de {tam_bloco}:")
+            
         # Inteiro: Agrupa da direita para a esquerda (Completa à ESQUERDA)
         while len(inteiro_str) % tam_bloco != 0:
             inteiro_str = "0" + inteiro_str
+        if passo_a_passo:
+            print(f"  Parte Inteira alinhada: {inteiro_str}")
+            
         for i in range(0, len(inteiro_str), tam_bloco):
-            res_inteiro += tabela[inteiro_str[i : i + tam_bloco]]
+            bloco = inteiro_str[i : i + tam_bloco]
+            res_inteiro += tabela[bloco]
+            if passo_a_passo:
+                print(f"  Bloco [{bloco}] -> Dígito '{tabela[bloco]}'")
             
         # Fração: Agrupa da esquerda para a direita (Completa à DIREITA)
         if fracao_str:
             while len(fracao_str) % tam_bloco != 0:
                 fracao_str += "0"
+            if passo_a_passo:
+                print(f"  Parte Fracionária alinhada: {fracao_str}")
+                
             for i in range(0, len(fracao_str), tam_bloco):
-                res_fracao += tabela[fracao_str[i : i + tam_bloco]]
+                bloco = fracao_str[i : i + tam_bloco]
+                res_fracao += tabela[bloco]
+                if passo_a_passo:
+                    print(f"  Bloco [{bloco}] -> Dígito '{tabela[bloco]}'")
             
             if len(res_fracao) > 16:
                 res_fracao = res_fracao[:16]
@@ -138,14 +192,23 @@ def bin_oct_hex(numero_str, base_origem, base_destino):
     # Octal ou Hexadecimal para Binário
     else:
         tabela = tabela_bin_octal if base_origem == 8 else tabela_bin_hex
+        bits_por_digito = 3 if base_origem == 8 else 4
         
+        if passo_a_passo:
+            print(f"\n[Passo a Passo] Expandindo cada dígito em {bits_por_digito} bits:")
+            
         for digito in inteiro_str:
             res_inteiro += tabela[digito]
+            if passo_a_passo:
+                print(f"  Dígito '{digito}' -> [{tabela[digito]}]")
+                
         res_inteiro = res_inteiro.lstrip("0") or "0"
         
         if fracao_str:
             for digito in fracao_str:
                 res_fracao += tabela[digito]
+                if passo_a_passo:
+                    print(f"  Dígito Fracionário '{digito}' -> [{tabela[digito]}]")
             if len(res_fracao) > 16:
                 res_fracao = res_fracao[:16]
                 truncado = True
@@ -158,14 +221,25 @@ def bin_oct_hex(numero_str, base_origem, base_destino):
     return resultado
 
 
-# --- F4: OCTAL <-> HEXADECIMAL (USANDO BINÁRIO) ---
-def oct_hex(numero_str, base_origem, base_destino):
+# --- F4: OCTAL <-> HEXADECIMAL (Usando Binário como Intermediário) ---
+def oct_hex(numero_str, base_origem, base_destino, passo_a_passo=False):
     if base_origem == 8 and base_destino == 16:
-        binario = bin_oct_hex(numero_str, 8, 2)
-        return bin_oct_hex(binario, 2, 16)
+        if passo_a_passo:
+            print("\n--- ETAPA 1: Convertendo de Octal para Binário Intermediário ---")
+        binario = bin_oct_hex(numero_str, 8, 2, passo_a_passo)
+        if passo_a_passo:
+            print(f"\n> Binário Intermediário Obtido: {binario}")
+            print("\n--- ETAPA 2: Convertendo de Binário para Hexadecimal ---")
+        return bin_oct_hex(binario, 2, 16, passo_a_passo)
+        
     if base_origem == 16 and base_destino == 8:
-        binario = bin_oct_hex(numero_str, 16, 2)
-        return bin_oct_hex(binario, 2, 8)
+        if passo_a_passo:
+            print("\n--- ETAPA 1: Convertendo de Hexadecimal para Binário Intermediário ---")
+        binario = bin_oct_hex(numero_str, 16, 2, passo_a_passo)
+        if passo_a_passo:
+            print(f"\n> Binário Intermediário Obtido: {binario}")
+            print("\n--- ETAPA 2: Convertendo de Binário para Octal ---")
+        return bin_oct_hex(binario, 2, 8, passo_a_passo)
 
 
 # --- F5: VALIDAR ENTRADA ---
@@ -199,4 +273,4 @@ def valores_max(quantidade_bits):
     print(f"Octal:       {oct(valor_max)[2:]}")
     print(f"Hexadecimal: {hex(valor_max)[2:].upper()}")
     print("-" * 40)
-    return valor_max    
+    return valor_max
