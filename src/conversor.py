@@ -1,171 +1,154 @@
-# F1 #
-def decimalparabase(numero, base): 
-    termos = "0123456789ABCDEF"
-    lista = []
-    while numero > 0:
-        resto = numero % base 
-        numero = numero // base
-        lista.append(termos[resto])
-    lista.reverse()
-    return "".join(lista)
-# F2 #
+﻿from fractions import Fraction
+
+TERMOS = "0123456789ABCDEF"
+MAX_CASAS_FRACIONARIAS = 16
+
+
+def _normalizar_string_numero(valor):
+    if valor is None:
+        return ""
+    texto = str(valor).strip().upper()
+    texto = texto.replace(",", ".")
+    return texto
+
+
+def validar(valor, base):
+    valor = _normalizar_string_numero(valor)
+    termos_validos = TERMOS[:base]
+    if valor.count(".") > 1:
+        return False
+    partes = valor.split(".")
+    if len(partes) == 0:
+        return False
+    inteiro = partes[0]
+    fracao = partes[1] if len(partes) == 2 else ""
+    if inteiro == "" and fracao == "":
+        return False
+    if inteiro:
+        for digito in inteiro:
+            if digito not in termos_validos:
+                return False
+    if fracao:
+        for digito in fracao:
+            if digito not in termos_validos:
+                return False
+    return True
+
+
+def _dividir_numero(valor):
+    valor = _normalizar_string_numero(valor)
+    if "." in valor:
+        inteiro, fracao = valor.split(".", 1)
+    else:
+        inteiro, fracao = valor, ""
+    return inteiro, fracao
+
+
 def baseparadecimal(numero, base):
-    termos = "0123456789ABCDEF"
-    cont = 0
-    decimal = 0
-    numero_str = str(numero)
-    num_d_algaris = len(numero_str)
-    for i in range(num_d_algaris - 1, -1, -1):
-            caractere = numero_str[i]
-            num_para_calc = termos.index(caractere)
-            decimal += num_para_calc * base ** cont
-            cont += 1
-    return decimal
-# F1 #
-def decimalparabase(numero, base): 
-    termos = "0123456789ABCDEF"
-    lista = []
-    while numero > 0:
-        resto = numero % base 
-        numero = numero // base
-        lista.append(termos[resto])
-    lista.reverse()
-    return "".join(lista)
-    def deciprabase(numero, base):
-    termos = "0123456789ABCDEF"
-    if numero == 0:
-        return "0"
-    lista = []
-    while numero > 0:
-        resto = numero % base
-        numero = numero // base
-        lista.append(termos[resto])
-    lista.reverse()
-    return "".join(lista)
-numero = input("")
-def virgulaviraponto (numero):
-    novonumero = numero.replace(",", ".")
-    if "." in novonumero:
-        numeroseparado = novonumero.split(".")
-        parteinteira = int(numeroseparado[0])
-        partefracionaria = numeroseparado[1]
-        partefracionaria = "0." + partefracionaria
-        return partefracionaria
-partefracionaria = virgulaviraponto(numero)
-lista = "0123456789ABCDEF"
-confirma = True
-lista2 = []
-cont = 0
-while confirma and cont < 16:
-    baseXfracao = str(float(partefracionaria) * base)
-    numeroseparado2 = baseXfracao.split(".")
-    intbaseXfracao = numeroseparado2[0]
-    frabaseXfracao = "0." + numeroseparado2[1]
-    frabaseXfracao = float(frabaseXfracao)
-    lista2.append(lista[int(intbaseXfracao)])
-    "".join(lista2)
-    cont += 1
-    if frabaseXfracao == 0:
-        confirma = False
-    elif cont == 16:
-        print("O numéro máximo de algarismos foi alcançado")
-
-# F3 #
-def bin_oct_hex(numero, base, nova_base):
-    numero = numero.upper()
-    resultado = ""
+    numero = _normalizar_string_numero(numero)
+    inteiro, fracao = _dividir_numero(numero)
+    valor = Fraction(0, 1)
+    for digito in inteiro:
+        if digito == "":
+            continue
+        valor = valor * base + TERMOS.index(digito)
+    if fracao:
+        denominador = base
+        for digito in fracao:
+            valor += Fraction(TERMOS.index(digito), denominador)
+            denominador *= base
+    return valor
 
 
-    #############dicionarios para conversões: #######################
-    tabela_conversao_octal = {
-         "000": "0", "001": "1",
-         "010": "2", "011": "3",
-         "100": "4", "101": "5",
-         "110": "6", "111": "7",
-    }
-    tabela_conversao_hex = {
-         "0000": "0", "0001": "1", "0010": "2", "0011": "3",
-         "0100": "4", "0101": "5", "0110": "6", "0111": "7",
-         "1000": "8", "1001": "9", "1010": "A", "1011": "B",
-         "1100": "C", "1101": "D", "1110": "E", "1111": "F"
-    }
-    tabela_bin_octal = {
-         "0": "000", "1": "001", "2": "010", "3": "011",
-         "4": "100", "5": "101", "6": "110", "7": "111"
-    }
-    tabela_bin_hex = {
-         "0": "0000", "1": "0001", "2": "0010", "3": "0011",
-         "4": "0100", "5": "0101", "6": "0110", "7": "0111",
-         "8": "1000", "9": "1001", "A": "1010", "B": "1011",
-         "C": "1100", "D": "1101", "E": "1110", "F": "1111"
-    }
-    #################################################################
+def _string_decimal_para_fracao(numero):
+    numero = _normalizar_string_numero(numero)
+    if "." not in numero:
+        return Fraction(int(numero), 1)
+    inteiro, fracao = numero.split(".", 1)
+    inteiro_valor = int(inteiro) if inteiro != "" else 0
+    numerador = int(fracao)
+    denominador = 10 ** len(fracao)
+    return Fraction(inteiro_valor * denominador + numerador, denominador)
 
 
-    #Binário para octal:
-    if base == 8:
-        while len(numero) % 3 != 0:
-             numero = "0" + numero
-        for i in range(0, len(numero), 3):
-            bloco = numero[i : i + 3]
-            resultado += tabela_conversao_octal[bloco]
-    
-    #Binário para hexadecimal:
-    if base == 16:
-        while len(numero) % 4 !=0:
-              numero = "0" + numero
-        for i in range(0, len(numero), 4):
-            bloco = numero[i : i + 4]
-            resultado += tabela_conversao_hex[bloco]
+def decimalparabase(numero, base, max_frac_digits=MAX_CASAS_FRACIONARIAS):
+    if isinstance(numero, str):
+        numero = _string_decimal_para_fracao(numero)
+    elif isinstance(numero, (int, float)):
+        numero = Fraction(str(numero))
+    elif not isinstance(numero, Fraction):
+        raise TypeError("Número inválido para conversão")
 
-    #Octal para Binário:
-    if base == 8 and nova_base == 2:
-         for i in numero:
-              bloco = tabela_bin_octal[i]
-              resultado += bloco
-              
-    #Hexadecimal para Binário:
-    if base == 16 and nova_base == 2:
-         for i in numero:
-              bloco = tabela_bin_hex[i]
-              resultado += bloco
-            
+    inteiro = abs(numero.numerator) // numero.denominator
+    resto = abs(numero) - inteiro
+    if inteiro == 0:
+        resultado_inteiro = "0"
+    else:
+        digitos_inteiro = []
+        while inteiro > 0:
+            digitos_inteiro.append(TERMOS[int(inteiro % base)])
+            inteiro //= base
+        resultado_inteiro = "".join(reversed(digitos_inteiro))
 
+    if resto == 0:
+        return resultado_inteiro
+
+    digitos_fracao = []
+    truncado = False
+    for _ in range(max_frac_digits):
+        resto *= base
+        digito = int(resto.numerator // resto.denominator)
+        digitos_fracao.append(TERMOS[digito])
+        resto -= Fraction(digito, 1)
+        if resto == 0:
+            break
+    if resto != 0:
+        truncado = True
+    resultado = resultado_inteiro + "," + "".join(digitos_fracao)
+    if truncado:
+        resultado += " (truncado)"
     return resultado
 
 
-# F4 #
-def oct_hex(numero, base, nova_base):
-     
-     resultado = ""
+def _fracao_para_string_decimal(valor, max_frac_digits=MAX_CASAS_FRACIONARIAS):
+    if isinstance(valor, str):
+        valor = _string_decimal_para_fracao(valor)
+    elif isinstance(valor, (int, float)):
+        valor = Fraction(str(valor))
+    elif not isinstance(valor, Fraction):
+        raise TypeError("Número inválido para formatação decimal")
 
-     #Octal para Hexadecimal
-     if base == 8 and nova_base == 16:
-          binario = bin_oct_hex(numero, 8, 2)
-          resultado = bin_oct_hex(binario, 2, 16)
-          return resultado
-     #Hexadecimal para Octal
-     if base == 16 and nova_base == 8:
-          binario = bin_oct_hex(numero, 16, 2)
-          resultado = bin_oct_hex(binario, 2, 8)
-          return resultado
-# F5 #
-def validar(valor, base):
-     valor = str(valor).upper()
-     valor = valor.replace(",",".")
-     termos = "0123456789ABCDEF"
-     termos_validos = termos[0:base]
-     numeropontos = valor.count(".")
-     if numeropontos > 1:
-          return False
-     numeroseparado = valor.split(".")
-     for digito in numeroseparado[0]:
-               if digito not in termos_validos:
-                    return False
-     if len(numeroseparado) == 2:
-        if numeroseparado[0] == "" or numeroseparado[1] == "":
-             return False
-        for digito in numeroseparado[1]:
-            if digito not in termos_validos:
-                 return False
-     return True
+    inteiro = abs(valor.numerator) // valor.denominator
+    resto = abs(valor) - inteiro
+    if resto == 0:
+        return str(inteiro)
+
+    digitos_fracao = []
+    truncado = False
+    for _ in range(max_frac_digits):
+        resto *= 10
+        digito = int(resto.numerator // resto.denominator)
+        digitos_fracao.append(str(digito))
+        resto -= Fraction(digito, 1)
+        if resto == 0:
+            break
+    if resto != 0:
+        truncado = True
+    resultado = f"{inteiro},{''.join(digitos_fracao)}"
+    if truncado:
+        resultado += " (truncado)"
+    return resultado
+
+
+def converter(valor, base_origem, base_saida, max_frac_digits=MAX_CASAS_FRACIONARIAS):
+    if not validar(valor, base_origem):
+        raise ValueError("Valor inválido para a base informada")
+    if base_origem == base_saida:
+        if base_origem == 10:
+            return _fracao_para_string_decimal(valor, max_frac_digits)
+        return decimalparabase(baseparadecimal(valor, base_origem), base_origem, max_frac_digits)
+    if base_origem == 10:
+        return decimalparabase(valor, base_saida, max_frac_digits)
+    if base_saida == 10:
+        return _fracao_para_string_decimal(baseparadecimal(valor, base_origem), max_frac_digits)
+    return decimalparabase(baseparadecimal(valor, base_origem), base_saida, max_frac_digits)

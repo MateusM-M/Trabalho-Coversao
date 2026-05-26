@@ -9,17 +9,17 @@ match modo:
         valor = ent.valor
         base_origem = int(ent.base)
         base_saida = int(ent.nova_base)
-        if base_origem == 10 and (base_saida == 2 or base_saida == 8 or base_saida == 16):
-            print(fc.decimalparabase(valor, base_saida)) 
-        elif (base_origem == 2 or base_origem == 8 or base_origem == 16) and base_saida == 10:
-            print(fc.baseparadecimal(valor, base_origem))
-        elif (base_origem == 2 and base_saida == 8) or (base_origem == 8 and base_saida == 2):
-            print(fc.bin_oct_hex(valor, base_origem, base_saida))
-        elif (base_origem == 16 and base_saida == 2) or (base_origem == 2 and base_saida == 16):
-            print(fc.bin_oct_hex(valor, base_origem, base_saida))
-        elif (base_origem == 8 and base_saida == 16) or (base_origem == 16 and base_saida == 8):
-            print(fc.oct_hex(valor, base_origem, base_saida))
+        if base_origem < 2 or base_origem > 16 or base_saida < 2 or base_saida > 16:
+            print("Base inválida. Use uma base entre 2 e 16.")
+        else:
+            try:
+                resultado = fc.converter(valor, base_origem, base_saida)
+                print(resultado)
+            except ValueError as err:
+                print(f"Erro: {err}")
     case 2:
         print("Modo csv selecionado.")
-        
-
+    case 3:
+        print("Modo quiz selecionado.")
+    case _:
+        print("Modo inválido.")
