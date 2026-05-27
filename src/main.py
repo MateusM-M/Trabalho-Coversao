@@ -14,7 +14,7 @@ while (sair == '0'): #Condição de Saída
                     Fore.BLUE + "2: modo passo-a-passo\n" +
                     Fore.LIGHTMAGENTA_EX + "3: modo CSV\n" + 
                     Fore.RED + "4: modo quiz\n" +
-                    Fore.MAGENTA + "5: Calcular máximos" +
+                    Fore.MAGENTA + "5: Calcular máximos\n" +
                     Fore.CYAN + "> " + Style.RESET_ALL) 
             .strip())
 
@@ -112,10 +112,10 @@ while (sair == '0'): #Condição de Saída
             sd.printa_maxbits(bits, resultado)
 
     
-    
+        case _:
+            print(Fore.RED + "Opção Inválida. Tente novamente" + Style.RESET_ALL)
 
         
-
     sair = input(Fore.CYAN + "\n\n0: REINICIAR\n" + Fore.RED + "1: SAIR\n" + Fore.WHITE + "> " + Style.RESET_ALL)
             
             

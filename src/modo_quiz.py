@@ -19,8 +19,8 @@ def quiz():
 
         elif nivel == 5:
             parte_inteira = random.randint(0, 255)
-            parte_fracionaria = str(random.randint(1, 1000))
-            valor_decimal = f"{parte_inteira},{parte_fracionaria}"
+            parte_fracionaria = random.randint(1, 1000)
+            valor_decimal = f"{parte_inteira}.{parte_fracionaria}"
 
         base_origem = random.choice([2, 8, 10, 16])
         base_saida = random.choice([2, 8, 10, 16])
@@ -33,7 +33,7 @@ def quiz():
 
         else:
             valor = fc.decimalparabase(str(valor_decimal), base_origem)
-
+            valor = valor.replace(" (truncado)", "")
         if base_origem == 10 and base_saida in (2, 8, 16):
             resposta_correta = fc.decimalparabase(valor, base_saida)
 

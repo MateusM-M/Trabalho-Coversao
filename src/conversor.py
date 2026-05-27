@@ -238,6 +238,7 @@ def oct_hex(numero_str, base_origem, base_destino, passo_a_passo=False):
         if passo_a_passo:
             print("\n--- ETAPA 1: Convertendo de Octal para Binário Intermediário ---")
         binario = bin_oct_hex(numero_str, 8, 2, passo_a_passo)
+        binario = binario.replace(" (truncado)", "")
         if passo_a_passo:
             print(f"\n> Binário Intermediário Obtido: {binario}")
             print("\n--- ETAPA 2: Convertendo de Binário para Hexadecimal ---")
@@ -247,6 +248,7 @@ def oct_hex(numero_str, base_origem, base_destino, passo_a_passo=False):
         if passo_a_passo:
             print("\n--- ETAPA 1: Convertendo de Hexadecimal para Binário Intermediário ---")
         binario = bin_oct_hex(numero_str, 16, 2, passo_a_passo)
+        binario = binario.replace(" (truncado)", "")
         if passo_a_passo:
             print(f"\n> Binário Intermediário Obtido: {binario}")
             print("\n--- ETAPA 2: Convertendo de Binário para Octal ---")
@@ -276,7 +278,7 @@ def validar(valor, base):
 
 # --- F10: CALCULADORA DE MÁXIMOS ---
 def valores_max(quantidade_bits):
-
+    
     valor_max = 2 ** quantidade_bits - 1
 
     binario = decimalparabase(str(valor_max), 2)
