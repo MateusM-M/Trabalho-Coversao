@@ -331,20 +331,31 @@ class TestConversoesBases(unittest.TestCase):
     # ----------------------------------------
 
     def test_max_01(self):
-        self.assertEqual(valores_max(1), 1)
+        # 2**1 - 1 = 1
+        self.assertEqual(valores_max(1), (1, "1", "1", "1"))
 
     def test_max_02(self):
-        self.assertEqual(valores_max(4), 15)
+        # 2**4 - 1 = 15
+        self.assertEqual(valores_max(4), (15, "1111", "17", "F"))
 
     def test_max_03(self):
-        self.assertEqual(valores_max(8), 255)
+        # 2**8 - 1 = 255
+        self.assertEqual(valores_max(8), (255, "11111111", "377", "FF"))
 
     def test_max_04(self):
-        self.assertEqual(valores_max(16), 65535)
+        # 2**16 - 1 = 65535
+        self.assertEqual(valores_max(16), (65535, "1111111111111111", "177777", "FFFF"))
 
     def test_max_05(self):
-        self.assertEqual(valores_max(32), 4294967295)
-
+        # 2**32 - 1 = 4294967295
+        esperado_32 = (
+            4294967295, 
+            "11111111111111111111111111111111", 
+            "37777777777", 
+            "FFFFFFFF"
+        )
+        self.assertEqual(valores_max(32), esperado_32)
+        
 # ----------------------------------------
 # EXECUÇÃO DOS TESTES
 # ----------------------------------------
