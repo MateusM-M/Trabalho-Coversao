@@ -76,33 +76,45 @@ while (sair == '0'): #Condição de Saída
         case 3:
             print(Fore.LIGHTMAGENTA_EX + "\n\nModo CSV selecionado." + Style.RESET_ALL)
 
-            ent.entrada_arq(valor, base_origem, base_saida)
+            entrada_csv = open("../entrada.csv", "r")
+            saida_csv = open("saida.csv", "w")
 
-            
-            if not fc.validar(valor, base_origem):
+            for linha in entrada_csv:
+
+                linha = linha.strip()
+
+                linha = linha.split(";")
+
+                valor = linha[0]
+                base_origem = int(linha[1])
+                base_saida = int(linha[2])
+
+                if not fc.validar(valor, base_origem):
                     sd.mensagem_de_erro(valor, base_origem)
 
-            else:
+                else:
 
-                if base_origem == 10 and base_saida in (2, 8, 16):
-                    resultado = fc.decimalparabase(valor, base_saida)
+                    if base_origem == 10 and base_saida in (2, 8, 16):
+                        resultado = fc.decimalparabase(valor, base_saida)
 
-                elif base_origem in (2, 8, 16) and base_saida == 10:
-                    resultado = fc.baseparadecimal(valor, base_origem)
+                    elif base_origem in (2, 8, 16) and base_saida == 10:
+                        resultado = fc.baseparadecimal(valor, base_origem)
 
-                elif (base_origem == 2 and base_saida in (8, 16)) or (base_origem in (8, 16) and base_saida == 2):
-                    resultado = fc.bin_oct_hex(valor, base_origem, base_saida)
+                    elif (base_origem == 2 and base_saida in (8, 16)) or (base_origem in (8, 16) and base_saida == 2):
+                        resultado = fc.bin_oct_hex(valor, base_origem, base_saida)
 
-                elif (base_origem == 8 and base_saida == 16) or (base_origem == 16 and base_saida == 8):
-                    resultado = fc.oct_hex(valor, base_origem, base_saida)
+                    elif (base_origem == 8 and base_saida == 16) or (base_origem == 16 and base_saida == 8):
+                        resultado = fc.oct_hex(valor, base_origem, base_saida)
 
-                sd.saida_csv(valor, base_origem, resultado, base_saida)
+                saida_csv.write(f"{valor};{base_origem};{resultado};{base_saida}\n")
+
+            entrada_csv.close()
+            saida_csv.close()
             
-        
         case 4:
             quiz.quiz()
-                
-                
+                    
+                    
         case 5:
         
             print(Fore.MAGENTA + "\n\nCalculadora de Máximos selecionada." + Style.RESET_ALL)
