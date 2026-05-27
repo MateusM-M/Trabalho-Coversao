@@ -1,7 +1,8 @@
 import conversor as fc
 import entrada as ent
 import saida as sd
-from colorama import Fore, Style
+import modo_quiz as quiz
+from ansi import Fore, Style
 
 sair='0'
 
@@ -10,10 +11,10 @@ sair='0'
 while (sair == '0'): #Condição de Saída
     modo = int(input(Fore.CYAN + "ESCOLHA O MODO DA APLICAÇÃO:\n\n" + 
                     Fore.WHITE + "1: modo normal\n" + 
-                    Fore.BLUE + "2 modo passo-a-passo\n" +
+                    Fore.BLUE + "2: modo passo-a-passo\n" +
                     Fore.LIGHTMAGENTA_EX + "3: modo CSV\n" + 
                     Fore.RED + "4: modo quiz\n" +
-                    Fore.MAGENTA + "5: SAIR\n" +
+                    Fore.MAGENTA + "5: Calcular máximos" +
                     Fore.CYAN + "> " + Style.RESET_ALL) 
             .strip())
 
@@ -75,7 +76,7 @@ while (sair == '0'): #Condição de Saída
         case 3:
             print(Fore.LIGHTMAGENTA_EX + "\n\nModo CSV selecionado." + Style.RESET_ALL)
 
-            entrada_csv = open("entrada.csv", "r")
+            entrada_csv = open("../entrada.csv", "r")
             saida_csv = open("saida.csv", "w")
 
             for linha in entrada_csv:
@@ -106,10 +107,27 @@ while (sair == '0'): #Condição de Saída
                         resultado = fc.oct_hex(valor, base_origem, base_saida)
 
                 saida_csv.write(f"{valor};{base_origem};{resultado};{base_saida}\n")
-
+                
             entrada_csv.close()
             saida_csv.close()
+            
+        
+        case 4:
+            quiz.quiz()
+                
+                
+        case 5:
+        
+            print(Fore.MAGENTA + "\n\nCalculadora de Máximos selecionada." + Style.RESET_ALL)
+            
+            bits = int(input(Fore.LIGHTMAGENTA_EX + "\nInsira a quantidade de bits: " + Style.RESET_ALL))
+            resultado = fc.valores_max(bits)
+            sd.printa_maxbits(bits, resultado)
+
     
+    
+
+        
 
     sair = input(Fore.CYAN + "\n\n0: REINICIAR\n" + Fore.RED + "1: SAIR\n" + Fore.WHITE + "> " + Style.RESET_ALL)
             

@@ -276,12 +276,11 @@ def validar(valor, base):
 
 # --- F10: CALCULADORA DE MÁXIMOS ---
 def valores_max(quantidade_bits):
+
     valor_max = 2 ** quantidade_bits - 1
-    
-    print(f"\n--- Máximos para {quantidade_bits} bits ($2^{{{quantidade_bits}}} - 1$) ---")
-    print(f"Decimal:     {valor_max}")
-    print(f"Binário:     {bin(valor_max)[2:]}")
-    print(f"Octal:       {oct(valor_max)[2:]}")
-    print(f"Hexadecimal: {hex(valor_max)[2:].upper()}")
-    print("-" * 40)
-    return valor_max
+
+    binario = decimalparabase(str(valor_max), 2)
+    octal = decimalparabase(str(valor_max), 8)
+    hexadecimal = decimalparabase(str(valor_max), 16)
+
+    return valor_max, binario, octal, hexadecimal
